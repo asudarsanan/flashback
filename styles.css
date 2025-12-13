@@ -1,0 +1,93 @@
+/* Flashback Extension Styles */
+
+#flashback-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 2147483647; /* Max z-index */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 20vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+#flashback-container {
+  width: 600px;
+  max-width: 90%;
+  background: #202020; /* Dark mode base */
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #fff;
+}
+
+#flashback-input {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 20px;
+  background: transparent;
+  border: none;
+  color: white;
+  outline: none;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+#flashback-input::placeholder {
+  color: rgba(255,255,255,0.4);
+}
+
+#flashback-results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.flashback-result-item {
+  padding: 10px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.flashback-result-item:last-child {
+  border-bottom: none;
+}
+
+.flashback-result-item.selected,
+.flashback-result-item:hover {
+  background-color: rgba(64, 156, 255, 0.2);
+}
+
+.flashback-result-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #eee;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flashback-result-url {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flashback-no-results {
+    padding: 20px;
+    text-align: center;
+    color: rgba(255,255,255,0.4);
+}
