@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashback</title>
+    <!-- Reusing main styles, we will add a specific class to body for popup context -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body.popup-mode {
+            width: 500px;
+            height: 400px;
+            margin: 0;
+            background-color: #1e1e1e;
+            /* Fallback */
+            overflow: hidden;
+        }
+
+        /* Override overlay styles to fit popup */
+        .popup-mode #flashback-overlay {
+            position: relative;
+            background: none;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            display: flex;
+            align-items: stretch;
+            top: auto;
+            left: auto;
+        }
+
+        .popup-mode #flashback-container {
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            border-radius: 0;
+            box-shadow: none;
+            border: none;
+        }
+    </style>
+</head>
+
+<body class="popup-mode">
+    <div id="flashback-overlay">
+        <div id="flashback-container">
+            <input type="text" id="flashback-input" placeholder="Flashback Search..." autocomplete="off" autofocus>
+            <ul id="flashback-results"></ul>
+        </div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+
+</html>
