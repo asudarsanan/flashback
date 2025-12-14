@@ -2,7 +2,7 @@
 
 **Flashback** is a premium, Spotlight-like search extension for your browser history. It replaces the clunky default history page with a lightning-fast, liquid-glass command palette.
 
-![Flashback Icon](icons/icon128.png)
+![Flashback Icon](icons/readme_logo.png)
 
 ## Features
 
