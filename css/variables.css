@@ -1,0 +1,206 @@
+:root {
+    /* --- Default Theme (Liquid Glass) --- */
+    --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --bg-overlay: rgba(30, 30, 30, 0.65);
+    --bg-backdrop-filter: blur(50px) saturate(180%);
+    --bg-webkit-backdrop-filter: blur(50px) saturate(180%);
+
+    --container-radius: 16px;
+    --container-border: none;
+    --container-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(0, 0, 0, 0.1);
+
+    --input-color: rgba(255, 255, 255, 0.95);
+    --input-placeholder: rgba(255, 255, 255, 0.3);
+    --input-font-weight: 300;
+    --input-text-shadow: none;
+    --input-caret: auto;
+
+    --separator-color: rgba(255, 255, 255, 0.1);
+
+    --scrollbar-width: 8px;
+    --scrollbar-track: transparent;
+    --scrollbar-thumb: rgba(255, 255, 255, 0.2);
+    --scrollbar-thumb-radius: 4px;
+
+    --item-border-bottom: none;
+    --item-hover-bg: rgba(0, 122, 255, 0.8);
+    --item-hover-color: #fff;
+
+    --title-color: rgba(255, 255, 255, 0.95);
+    --title-weight: 400;
+
+    --url-color: rgba(255, 255, 255, 0.4);
+    --url-hover-color: rgba(255, 255, 255, 0.85);
+    /* For selected state */
+
+    --scanline-display: none;
+    --no-results-color: rgba(255, 255, 255, 0.4);
+}
+
+/* --- Retro Theme Override --- */
+body.theme-retro {
+    --font-family: 'Courier New', Courier, monospace;
+
+    --bg-overlay: #000000;
+    --bg-backdrop-filter: none;
+    --bg-webkit-backdrop-filter: none;
+
+    --container-radius: 4px;
+    --container-border: 1px solid #00ff00;
+    --container-shadow:
+        0 0 10px rgba(0, 255, 0, 0.2),
+        0 0 20px rgba(0, 255, 0, 0.1);
+
+    --input-color: #00ff00;
+    --input-placeholder: rgba(0, 255, 0, 0.3);
+    --input-font-weight: bold;
+    --input-text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+    --input-caret: #00ff00;
+
+    --separator-color: #00ff00;
+
+    --scrollbar-width: 8px;
+    --scrollbar-track: transparent;
+    --scrollbar-thumb: #00ff00;
+    --scrollbar-thumb-radius: 0;
+
+    --item-border-bottom: 1px dashed rgba(0, 255, 0, 0.2);
+    --item-hover-bg: #00ff00;
+    --item-hover-color: #000;
+
+    --title-color: inherit;
+    --title-weight: bold;
+
+    --url-color: inherit;
+    /* Will use opacity 0.7 locally */
+    --url-hover-color: #000;
+
+    --scanline-display: block;
+    --no-results-color: #00ff00;
+}
+
+/* --- Catppuccin (Mocha) Theme --- */
+body.theme-catppuccin {
+    --bg-overlay: #1e1e2e;
+    --bg-backdrop-filter: none;
+    --bg-webkit-backdrop-filter: none;
+
+    --container-radius: 12px;
+    --container-border: 1px solid #313244;
+    /* Surface0 */
+    --container-shadow:
+        0 0 0 1px #181825,
+        0 10px 30px rgba(0, 0, 0, 0.5);
+
+    --input-color: #cdd6f4;
+    /* Text */
+    --input-placeholder: #6c7086;
+    /* Overlay0 */
+    --input-font-weight: 400;
+    --input-text-shadow: none;
+    --input-caret: #f5e0dc;
+    /* Rosewater */
+
+    --separator-color: #313244;
+    /* Surface0 */
+
+    --scrollbar-thumb: #45475a;
+    /* Surface1 */
+    --scrollbar-thumb-radius: 4px;
+
+    --item-border-bottom: 1px solid #313244;
+    --item-hover-bg: #313244;
+    /* Surface0/Surface1 mix */
+    --item-hover-color: #cdd6f4;
+
+    --title-color: #cdd6f4;
+    --title-weight: 400;
+
+    --url-color: #a6adc8;
+    /* Subtext0 */
+    --url-hover-color: #cdd6f4;
+
+    --scanline-display: none;
+    --no-results-color: #6c7086;
+}
+
+/* --- Dracula Theme --- */
+body.theme-dracula {
+    --bg-overlay: #282a36;
+    --bg-backdrop-filter: none;
+    --bg-webkit-backdrop-filter: none;
+
+    --container-radius: 12px;
+    --container-border: 1px solid #44475a;
+    --container-shadow:
+        0 0 0 1px #44475a,
+        0 10px 30px rgba(0, 0, 0, 0.5);
+
+    --input-color: #f8f8f2;
+    --input-placeholder: #6272a4;
+    --input-font-weight: 400;
+    --input-text-shadow: none;
+    --input-caret: #ff79c6;
+    /* Pink */
+
+    --separator-color: #44475a;
+
+    --scrollbar-thumb: #6272a4;
+    --scrollbar-thumb-radius: 4px;
+
+    --item-border-bottom: 1px solid #44475a;
+    --item-hover-bg: #44475a;
+    --item-hover-color: #f8f8f2;
+
+    --title-color: #bd93f9;
+    /* Purple */
+    --title-weight: 500;
+
+    --url-color: #6272a4;
+    --url-hover-color: #f8f8f2;
+
+    --scanline-display: none;
+    --no-results-color: #6272a4;
+}
+
+/* --- Alien Blood Theme --- */
+body.theme-alienblood {
+    --bg-overlay: #0f1c1e;
+    --bg-backdrop-filter: none;
+    --bg-webkit-backdrop-filter: none;
+
+    --container-radius: 4px;
+    --container-border: 1px solid #00a38f;
+    /* Cyan/Teal */
+    --container-shadow:
+        0 0 15px rgba(0, 163, 143, 0.15);
+
+    --input-color: #2f9603;
+    /* Green */
+    --input-placeholder: rgba(47, 150, 3, 0.3);
+    --input-font-weight: 400;
+    --input-text-shadow: none;
+    --input-caret: #00a38f;
+
+    --separator-color: #1a2f33;
+
+    --scrollbar-thumb: #1a2f33;
+    --scrollbar-thumb-radius: 0;
+
+    --item-border-bottom: 1px solid #1a2f33;
+    --item-hover-bg: #1a2f33;
+    --item-hover-color: #2f9603;
+
+    --title-color: #c5c8c6;
+    --title-weight: 400;
+
+    --url-color: #00a38f;
+    --url-hover-color: #00a38f;
+
+    --scanline-display: none;
+    --no-results-color: #2f9603;
+}

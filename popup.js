@@ -1,8 +1,8 @@
 import { debounce } from './js/utils.js';
-import { initTheme, setTheme } from './js/theme.js';
-import { searchHistory, searchTabs } from './js/search.js';
+import { initTheme, setTheme, THEMES } from './js/theme.js';
+import { searchHistory, searchTabs, searchRecentlyClosed, searchBookmarks } from './js/search.js';
 import { renderResults, updateSelectionDOM } from './js/ui.js';
-import { handleCalculator } from './js/commands.js';
+import { handleCalculator, getHelpCommands } from './js/commands.js';
 
 const searchInput = document.getElementById('flashback-input');
 const resultsList = document.getElementById('flashback-results');
@@ -26,6 +26,15 @@ searchInput.addEventListener('keydown', handleKeyNavigation);
 
 async function performSearch(query) {
     const rawQuery = query.trim();
+
+    // 0. Help Command
+    if (rawQuery === '/' || rawQuery === '/help') {
+        const results = getHelpCommands();
+        currentResults = results;
+        renderResults(currentResults, resultsList, activateResult, updateSelection);
+        selectedIndex = -1;
+        return;
+    }
 
     // 1. Calculator Mode
     if (rawQuery.startsWith('=')) {
@@ -58,30 +67,71 @@ async function performSearch(query) {
         return;
     }
 
-    // 4. Theme Switcher Command
-    if (rawQuery.startsWith('/theme')) {
-        const themeName = rawQuery.replace('/theme', '').trim().toLowerCase();
-
-        let title, subtitle, action;
-        if (themeName === 'retro') {
-            title = 'Switch to Retro Theme';
-            subtitle = 'Apply the Retro Terminal style';
-            action = () => setTheme('retro');
-        } else if (themeName === 'glass' || themeName === 'default') {
-            title = 'Switch to Glass Theme';
-            subtitle = 'Apply the default Liquid Glass style';
-            action = () => setTheme('glass');
-        } else {
-            title = 'Theme Switcher';
-            subtitle = 'Type /theme retro or /theme glass';
-            action = () => { };
-        }
-
-        renderCommandResult(title, subtitle, action);
+    // 4. Recently Closed Tabs Command
+    if (rawQuery.startsWith('/closed')) {
+        const query = rawQuery.replace('/closed', '').trim();
+        const results = await searchRecentlyClosed(query);
+        currentResults = results;
+        renderResults(currentResults, resultsList, activateResult, updateSelection);
+        selectedIndex = -1;
         return;
     }
 
-    // 5. Standard Search
+    // 5. Bookmarks Command
+    if (rawQuery.startsWith('/bookmarks')) {
+        const query = rawQuery.replace('/bookmarks', '').trim();
+        const results = await searchBookmarks(query);
+        currentResults = results;
+        renderResults(currentResults, resultsList, activateResult, updateSelection);
+        selectedIndex = -1;
+        return;
+    }
+
+    // 6. Theme Switcher Command
+    if (rawQuery.startsWith('/theme')) {
+        const themeName = rawQuery.replace('/theme', '').trim().toLowerCase();
+
+        // If specific theme provided
+        if (themeName && (THEMES.includes(themeName) || themeName === 'glass' || themeName === 'default')) {
+            const name = themeName === 'default' ? 'glass' : themeName;
+            const title = `Switch to ${name.charAt(0).toUpperCase() + name.slice(1)} Theme`;
+            const subtitle = `Apply the ${name} style`;
+            const action = () => setTheme(name);
+            renderCommandResult(title, subtitle, action);
+            return;
+        }
+
+        // List all themes
+        const themesList = ['glass', ...THEMES];
+        const results = themesList.map(t => ({
+            title: `Theme: ${t.charAt(0).toUpperCase() + t.slice(1)}`,
+            url: `Apply ${t} theme`,
+            action: () => {
+                setTheme(t);
+                // Optional: keep window open or show confirmation? 
+                // Currently setTheme applies it. We can re-render to show active state or close.
+                // Let's re-render to show it's active or just close.
+                // Standard behavior seems to be "do action and close".
+                // But for theme switching, seeing it change live is nice.
+                // existing logic for action closes window if not prevented.
+                // But wait, activateResult calls item.action().
+                // if item.action is defined, it runs it and returns.
+                // if we want to keep it open, we shouldn't close it in action.
+                // But standard search closes. Let's stick to standard behavior for now.
+
+                // Keep input as /theme so they can switch again if they want?
+                // For now, simple action.
+            }
+        }));
+
+        currentResults = results;
+        renderResults(currentResults, resultsList, activateResult, updateSelection);
+        selectedIndex = -1;
+
+        return;
+    }
+
+    // 7. Standard Search
     // Check smart filter
     let filterDomain = null;
     let textQuery = rawQuery;

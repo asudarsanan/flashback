@@ -5,7 +5,9 @@
     "description": "Spotlight-like search for browser history",
     "permissions": [
         "history",
-        "tabs"
+        "tabs",
+        "sessions",
+        "bookmarks"
     ],
     "icons": {
         "16": "icons/icon16.png",

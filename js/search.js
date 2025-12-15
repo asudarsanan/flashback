@@ -110,3 +110,88 @@ export async function searchTabs(query) {
         });
     });
 }
+
+export async function searchRecentlyClosed(query) {
+    return new Promise((resolve) => {
+        chrome.sessions.getRecentlyClosed({ maxResults: 25 }, (sessions) => {
+            const q = query.toLowerCase();
+            const results = [];
+
+            sessions.forEach(session => {
+                if (session.tab) {
+                    const title = session.tab.title || 'Untitled Tab';
+                    const url = session.tab.url || '';
+
+                    if (title.toLowerCase().includes(q) || url.toLowerCase().includes(q)) {
+                        results.push({
+                            title: title,
+                            url: url,
+                            sessionId: session.tab.sessionId,
+                            lastModified: session.lastModified,
+                            isClosedTab: true,
+                            action: () => {
+                                chrome.sessions.restore(session.tab.sessionId);
+                                window.close();
+                            }
+                        });
+                    }
+                } else if (session.window) {
+                    // Handle closed windows if needed, currently focusing on tabs per requirement
+                    // But we can include them as "Restorable Window"
+                    const tabCount = session.window.tabs ? session.window.tabs.length : 0;
+                    const title = `Closed Window (${tabCount} tabs)`;
+
+                    if (title.toLowerCase().includes(q)) {
+                        results.push({
+                            title: title,
+                            url: 'Restore Window',
+                            sessionId: session.window.sessionId,
+                            lastModified: session.lastModified,
+                            isClosedTab: true,
+                            action: () => {
+                                chrome.sessions.restore(session.window.sessionId);
+                                window.close();
+                            }
+                        });
+                    }
+                }
+            });
+
+            resolve(results);
+        });
+    });
+}
+
+export async function searchBookmarks(query) {
+    return new Promise((resolve) => {
+        // If query is empty, maybe show recent bookmarks or root?
+        // chrome.bookmarks.search requires a query string or object.
+        // If query is empty, we can get the whole tree or search for everything.
+        // Searching with empty string might not return everything in some implementations, 
+        // but let's try getRecent if query is empty.
+
+        if (!query) {
+            chrome.bookmarks.getRecent(20, (bookmarks) => {
+                const results = bookmarks.map(b => ({
+                    title: b.title,
+                    url: b.url,
+                    isBookmark: true
+                }));
+                resolve(results);
+            });
+            return;
+        }
+
+        chrome.bookmarks.search(query, (bookmarks) => {
+            // Filter out folders (which don't have URLs)
+            const results = bookmarks
+                .filter(b => b.url)
+                .map(b => ({
+                    title: b.title,
+                    url: b.url,
+                    isBookmark: true
+                }));
+            resolve(results.slice(0, 20)); // Limit results
+        });
+    });
+}

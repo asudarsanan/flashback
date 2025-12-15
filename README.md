@@ -21,7 +21,11 @@
 Flashback isn't just for history. Use special prefixes for utility actions:
 - **Calculator**: Type `=` followed by math (e.g., `= 128 * 4`) to see the result instantly.
 - **Tab Search**: Type `/tabs <query>` to search *only* your currently open tabs.
+- **Closed Tabs**: Type `/closed` to see and restore recently closed tabs.
+- **Bookmarks**: Type `/bookmarks <query>` to search your bookmarks.
+- **Themes**: Type `/theme` to switch between `glass` and `retro` themes.
 - **Clear History**: Type `/clear` to wipe your browsing history.
+- **Help**: Type `/` or `/help` to see this list of commands.
 
 ## Installation
 
@@ -30,6 +34,23 @@ Flashback isn't just for history. Use special prefixes for utility actions:
 3. Enable **Developer Mode** (top right).
 4. Click **Load unpacked**.
 5. Select the `flashback` directory.
+
+## Creating Themes
+
+Flashback uses a modular theming system based on CSS Variables. You can easily add your own theme:
+
+1.  Open `css/variables.css`.
+2.  Define a new CSS class for your theme (e.g., `body.theme-ocean`).
+3.  Override the variables you want to change.
+    ```css
+    body.theme-ocean {
+        --bg-overlay: rgba(0, 105, 148, 0.8);
+        --input-color: #ffffff;
+        /* ... override other variables */
+    }
+    ```
+4.  Open `js/theme.js` and add your theme key to the switch logic (or just use the class name if you refactor `setTheme`).
+5.  Open `js/commands.js` and add a new `/theme ocean` command alias if desired.
 
 ## Usage
 
