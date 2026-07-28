@@ -1,4 +1,17 @@
-export const THEMES = ['retro', 'catppuccin', 'dracula', 'alienblood'];
+export const THEMES = ['retro', 'catppuccin', 'dracula', 'alienblood', 'nord', 'gruvbox', 'tokyonight', 'solarized', 'rosepine'];
+
+export const THEME_LABELS = {
+    glass: 'Glass',
+    retro: 'Retro',
+    catppuccin: 'Catppuccin',
+    dracula: 'Dracula',
+    alienblood: 'Alien Blood',
+    nord: 'Nord',
+    gruvbox: 'Gruvbox',
+    tokyonight: 'Tokyo Night',
+    solarized: 'Solarized',
+    rosepine: 'Rosé Pine'
+};
 
 export function initTheme() {
     const savedTheme = localStorage.getItem('theme');

@@ -1,5 +1,5 @@
 import { debounce } from './js/utils.js';
-import { initTheme, setTheme, THEMES } from './js/theme.js';
+import { initTheme, setTheme, THEMES, THEME_LABELS } from './js/theme.js';
 import { searchHistory, searchTabs, searchRecentlyClosed, searchBookmarks } from './js/search.js';
 import { renderResults, updateSelectionDOM } from './js/ui.js';
 import { handleCalculator, getHelpCommands } from './js/commands.js';
@@ -9,6 +9,7 @@ const resultsList = document.getElementById('flashback-results');
 
 let selectedIndex = -1;
 let currentResults = [];
+let clearConfirmArmed = false;
 
 // Focus input and Init on load
 window.addEventListener('load', () => {
@@ -27,63 +28,64 @@ searchInput.addEventListener('keydown', handleKeyNavigation);
 async function performSearch(query) {
     const rawQuery = query.trim();
 
+    // Typing anything other than /clear disarms the pending confirmation,
+    // so it can't fire later from a stale state.
+    if (rawQuery !== '/clear') {
+        clearConfirmArmed = false;
+    }
+
     // 0. Help Command
     if (rawQuery === '/' || rawQuery === '/help') {
-        const results = getHelpCommands();
-        currentResults = results;
-        renderResults(currentResults, resultsList, activateResult, updateSelection);
-        selectedIndex = -1;
+        showResults(getHelpCommands());
         return;
     }
 
     // 1. Calculator Mode
     if (rawQuery.startsWith('=')) {
-        const item = handleCalculator(rawQuery.substring(1));
-        currentResults = [item];
-        renderResults(currentResults, resultsList, activateResult, updateSelection);
-        selectedIndex = -1;
+        showResults([handleCalculator(rawQuery.substring(1))]);
         return;
     }
 
     // 2. Clear History Command
+    // window.confirm() is unreliable inside an extension popup (it can lose
+    // focus/close before the dialog resolves), so confirmation is handled as
+    // an explicit second step within the palette itself instead.
     if (rawQuery === '/clear') {
-        renderCommandResult('Clear History', 'Delete all browsing history', () => {
-            if (confirm('Are you sure you want to clear your entire browsing history?')) {
-                chrome.history.deleteAll(() => {
-                    performSearch('');
-                });
-            }
-        });
+        if (!clearConfirmArmed) {
+            clearConfirmArmed = true;
+            renderCommandResult(
+                'Clear All Browsing History?',
+                'This cannot be undone. Press Enter again to confirm.',
+                () => performSearch('/clear')
+            );
+        } else {
+            renderCommandResult('Clearing history…', 'Please wait', () => { });
+            chrome.history.deleteAll(() => {
+                clearConfirmArmed = false;
+                performSearch('');
+            });
+        }
         return;
     }
 
     // 3. Tab Search Command
     if (rawQuery.startsWith('/tabs')) {
         const tabQuery = rawQuery.replace('/tabs', '').trim();
-        const results = await searchTabs(tabQuery);
-        currentResults = results;
-        renderResults(currentResults, resultsList, activateResult, updateSelection);
-        selectedIndex = -1;
+        showResults(await searchTabs(tabQuery));
         return;
     }
 
     // 4. Recently Closed Tabs Command
     if (rawQuery.startsWith('/closed')) {
-        const query = rawQuery.replace('/closed', '').trim();
-        const results = await searchRecentlyClosed(query);
-        currentResults = results;
-        renderResults(currentResults, resultsList, activateResult, updateSelection);
-        selectedIndex = -1;
+        const closedQuery = rawQuery.replace('/closed', '').trim();
+        showResults(await searchRecentlyClosed(closedQuery));
         return;
     }
 
     // 5. Bookmarks Command
     if (rawQuery.startsWith('/bookmarks')) {
-        const query = rawQuery.replace('/bookmarks', '').trim();
-        const results = await searchBookmarks(query);
-        currentResults = results;
-        renderResults(currentResults, resultsList, activateResult, updateSelection);
-        selectedIndex = -1;
+        const bookmarksQuery = rawQuery.replace('/bookmarks', '').trim();
+        showResults(await searchBookmarks(bookmarksQuery));
         return;
     }
 
@@ -94,8 +96,9 @@ async function performSearch(query) {
         // If specific theme provided
         if (themeName && (THEMES.includes(themeName) || themeName === 'glass' || themeName === 'default')) {
             const name = themeName === 'default' ? 'glass' : themeName;
-            const title = `Switch to ${name.charAt(0).toUpperCase() + name.slice(1)} Theme`;
-            const subtitle = `Apply the ${name} style`;
+            const label = THEME_LABELS[name] || name;
+            const title = `Switch to ${label} Theme`;
+            const subtitle = `Apply the ${label} style`;
             const action = () => setTheme(name);
             renderCommandResult(title, subtitle, action);
             return;
@@ -104,30 +107,25 @@ async function performSearch(query) {
         // List all themes
         const themesList = ['glass', ...THEMES];
         const results = themesList.map(t => ({
-            title: `Theme: ${t.charAt(0).toUpperCase() + t.slice(1)}`,
-            url: `Apply ${t} theme`,
-            action: () => {
-                setTheme(t);
-                // Optional: keep window open or show confirmation? 
-                // Currently setTheme applies it. We can re-render to show active state or close.
-                // Let's re-render to show it's active or just close.
-                // Standard behavior seems to be "do action and close".
-                // But for theme switching, seeing it change live is nice.
-                // existing logic for action closes window if not prevented.
-                // But wait, activateResult calls item.action().
-                // if item.action is defined, it runs it and returns.
-                // if we want to keep it open, we shouldn't close it in action.
-                // But standard search closes. Let's stick to standard behavior for now.
-
-                // Keep input as /theme so they can switch again if they want?
-                // For now, simple action.
-            }
+            title: `Theme: ${THEME_LABELS[t] || t}`,
+            url: `Apply ${THEME_LABELS[t] || t} theme`,
+            action: () => setTheme(t)
         }));
 
-        currentResults = results;
-        renderResults(currentResults, resultsList, activateResult, updateSelection);
-        selectedIndex = -1;
+        showResults(results);
+        return;
+    }
 
+    // 6.5 Keyboard Shortcut Command
+    if (rawQuery.startsWith('/shortcut')) {
+        renderCommandResult(
+            'Change Flashback Shortcut',
+            'Opens your browser\'s extension shortcuts page',
+            () => {
+                chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
+                window.close();
+            }
+        );
         return;
     }
 
@@ -145,21 +143,20 @@ async function performSearch(query) {
         }
     }
 
-    const results = await searchHistory(textQuery, filterDomain);
+    showResults(await searchHistory(textQuery, filterDomain));
+}
+
+// Renders results and auto-selects the first one, so the highlight always
+// matches what pressing Enter will actually activate.
+function showResults(results) {
     currentResults = results;
     renderResults(currentResults, resultsList, activateResult, updateSelection);
-    selectedIndex = -1;
+    selectedIndex = results.length > 0 ? 0 : -1;
+    updateSelectionDOM(selectedIndex, resultsList);
 }
 
 function renderCommandResult(title, subtitle, action) {
-    const item = {
-        title: title,
-        url: subtitle,
-        action: action
-    };
-    currentResults = [item];
-    renderResults(currentResults, resultsList, activateResult, updateSelection);
-    selectedIndex = -1;
+    showResults([{ title, url: subtitle, action }]);
 }
 
 function updateSelection(index) {

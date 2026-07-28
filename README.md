@@ -12,7 +12,7 @@
 - **Spotlight Design**: Pixel-perfect replication of the Apple Spotlight search bar.
 
 ### ⚡ Smart Search
-- **Fuzzy Matching**: Finds what you need even if you make typos (e.g., "githbu" -> "GitHub").
+- **Fuzzy Matching**: Type any subsequence of the letters and it'll find it (e.g., "gthb" -> "GitHub"). Applies consistently across history, tabs, bookmarks, and closed tabs.
 - **Smart Filters**:
   - `prefix: query` (e.g., `google: styling`) to filter results by domain.
 - **Switch-to-Tab**: If you select a result that is already open in another tab, Flashback jumps to it instantly instead of creating a duplicate.
@@ -23,7 +23,8 @@ Flashback isn't just for history. Use special prefixes for utility actions:
 - **Tab Search**: Type `/tabs <query>` to search *only* your currently open tabs.
 - **Closed Tabs**: Type `/closed` to see and restore recently closed tabs.
 - **Bookmarks**: Type `/bookmarks <query>` to search your bookmarks.
-- **Themes**: Type `/theme` to switch between `glass` and `retro` themes.
+- **Themes**: Type `/theme` to switch between `glass`, `retro`, `catppuccin`, `dracula`, `alienblood`, `nord`, `gruvbox`, `tokyonight`, `solarized`, and `rosepine`.
+- **Shortcut**: Type `/shortcut` to open your browser's extension shortcuts page and rebind the key that opens Flashback.
 - **Clear History**: Type `/clear` to wipe your browsing history.
 - **Help**: Type `/` or `/help` to see this list of commands.
 
@@ -54,6 +55,6 @@ Flashback uses a modular theming system based on CSS Variables. You can easily a
 
 ## Usage
 
-- **Open**: Press `Ctrl+Shift+K` (or `Command+Shift+K` on Mac) to toggle Flashback.
+- **Open**: Press `Ctrl+Shift+K` (or `Command+Shift+K` on Mac) to toggle Flashback. Rebind this any time via `/shortcut`, or manually at `chrome://extensions/shortcuts`.
 - **Navigate**: Use `Up/Down` arrows to select results.
 - **Open**: Press `Enter` to open the selected result (or switch to its tab).
