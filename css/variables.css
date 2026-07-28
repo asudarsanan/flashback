@@ -1,17 +1,35 @@
 :root {
-    /* --- Default Theme (Liquid Glass) --- */
+    /* --- Default Theme (Liquid Glass, macOS Spotlight-style) --- */
     --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
-    --bg-overlay: rgba(30, 30, 30, 0.65);
-    --bg-backdrop-filter: blur(50px) saturate(180%);
-    --bg-webkit-backdrop-filter: blur(50px) saturate(180%);
+    --bg-overlay: rgba(28, 28, 30, 0.6);
+    --bg-backdrop-filter: blur(60px) saturate(190%) brightness(1.05);
+    --bg-webkit-backdrop-filter: blur(60px) saturate(190%) brightness(1.05);
 
-    --container-radius: 16px;
+    --container-radius: 22px;
     --container-border: none;
     --container-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.15) inset,
-        0 20px 40px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(0, 0, 0, 0.1);
+        0 0 0 0.5px rgba(255, 255, 255, 0.22) inset,
+        0 1px 0 rgba(255, 255, 255, 0.16) inset,
+        0 -1px 0 rgba(0, 0, 0, 0.3) inset,
+        0 30px 60px -12px rgba(0, 0, 0, 0.55),
+        0 12px 24px -8px rgba(0, 0, 0, 0.35);
+
+    /* Soft directional glow baked into the surface, as if light is bending
+       through a curved pane rather than sitting behind a flat tint. */
+    --glass-sheen:
+        radial-gradient(130% 90% at 12% -15%, rgba(255, 255, 255, 0.4), transparent 55%),
+        radial-gradient(100% 70% at 105% 8%, rgba(255, 255, 255, 0.14), transparent 55%),
+        linear-gradient(200deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 30%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0.12) 100%);
+
+    /* A slow-drifting band of light that sweeps the surface, the "liquid"
+       motion cue. Kept subtle: low opacity, long duration. */
+    --glass-shine: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.16) 47%, rgba(255, 255, 255, 0.32) 50%, rgba(255, 255, 255, 0.16) 53%, transparent 65%);
+    --glass-shine-opacity: 0.8;
+
+    --focus-glow:
+        0 0 0 6px rgba(10, 132, 255, 0.22),
+        0 0 45px 4px rgba(10, 132, 255, 0.28);
 
     --input-color: rgba(255, 255, 255, 0.95);
     --input-placeholder: rgba(255, 255, 255, 0.3);
@@ -19,7 +37,7 @@
     --input-text-shadow: none;
     --input-caret: auto;
 
-    --separator-color: rgba(255, 255, 255, 0.1);
+    --separator-color: rgba(255, 255, 255, 0.08);
 
     --scrollbar-width: 8px;
     --scrollbar-track: transparent;
@@ -27,8 +45,14 @@
     --scrollbar-thumb-radius: 4px;
 
     --item-border-bottom: none;
-    --item-hover-bg: rgba(0, 122, 255, 0.8);
+    --item-radius: 12px;
+    --item-inline-margin: 8px;
+    --item-hover-scale: 1.015;
+    --item-hover-bg: linear-gradient(180deg, rgba(10, 132, 255, 0.9), rgba(0, 110, 240, 0.9));
     --item-hover-color: #fff;
+    --item-hover-shadow:
+        0 4px 14px rgba(0, 90, 220, 0.4),
+        0 1px 0 rgba(255, 255, 255, 0.5) inset;
 
     --title-color: rgba(255, 255, 255, 0.95);
     --title-weight: 400;
@@ -39,6 +63,48 @@
 
     --scanline-display: none;
     --no-results-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Adapt the default Glass theme to the system's light/dark preference,
+   the way macOS Spotlight follows system appearance. Named themes below
+   are intentionally fixed palettes and are not affected. */
+@media (prefers-color-scheme: light) {
+    body:not([class*="theme-"]) {
+        --bg-overlay: rgba(246, 246, 248, 0.65);
+        --bg-backdrop-filter: blur(60px) saturate(180%) brightness(1.02);
+        --bg-webkit-backdrop-filter: blur(60px) saturate(180%) brightness(1.02);
+
+        --container-shadow:
+            0 0 0 0.5px rgba(255, 255, 255, 0.75) inset,
+            0 1px 0 rgba(255, 255, 255, 0.9) inset,
+            0 -1px 0 rgba(0, 0, 0, 0.06) inset,
+            0 30px 60px -12px rgba(0, 0, 0, 0.25),
+            0 12px 24px -8px rgba(0, 0, 0, 0.12);
+
+        --glass-sheen:
+            radial-gradient(130% 90% at 12% -15%, rgba(255, 255, 255, 0.75), transparent 55%),
+            radial-gradient(100% 70% at 105% 8%, rgba(255, 255, 255, 0.3), transparent 55%),
+            linear-gradient(200deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 30%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0.04) 100%);
+
+        --glass-shine: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.35) 47%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.35) 53%, transparent 65%);
+
+        --focus-glow:
+            0 0 0 6px rgba(10, 132, 255, 0.18),
+            0 0 45px 4px rgba(10, 132, 255, 0.2);
+
+        --input-color: rgba(0, 0, 0, 0.85);
+        --input-placeholder: rgba(0, 0, 0, 0.32);
+
+        --separator-color: rgba(0, 0, 0, 0.08);
+
+        --scrollbar-thumb: rgba(0, 0, 0, 0.18);
+
+        --title-color: rgba(0, 0, 0, 0.85);
+        --url-color: rgba(0, 0, 0, 0.4);
+        --url-hover-color: rgba(255, 255, 255, 0.9);
+
+        --no-results-color: rgba(0, 0, 0, 0.35);
+    }
 }
 
 /* --- Retro Theme Override --- */
@@ -69,8 +135,15 @@ body.theme-retro {
     --scrollbar-thumb-radius: 0;
 
     --item-border-bottom: 1px dashed rgba(0, 255, 0, 0.2);
+    --item-radius: 0;
+    --item-inline-margin: 0;
     --item-hover-bg: #00ff00;
     --item-hover-color: #000;
+    --item-hover-shadow: none;
+    --glass-sheen: none;
+    --glass-shine: none;
+    --focus-glow: 0 0 0 0 transparent;
+    --item-hover-scale: 1;
 
     --title-color: inherit;
     --title-weight: bold;
@@ -113,9 +186,16 @@ body.theme-catppuccin {
     --scrollbar-thumb-radius: 4px;
 
     --item-border-bottom: 1px solid #313244;
+    --item-radius: 0;
+    --item-inline-margin: 0;
     --item-hover-bg: #313244;
     /* Surface0/Surface1 mix */
     --item-hover-color: #cdd6f4;
+    --item-hover-shadow: none;
+    --glass-sheen: none;
+    --glass-shine: none;
+    --focus-glow: 0 0 0 0 transparent;
+    --item-hover-scale: 1;
 
     --title-color: #cdd6f4;
     --title-weight: 400;
@@ -153,8 +233,15 @@ body.theme-dracula {
     --scrollbar-thumb-radius: 4px;
 
     --item-border-bottom: 1px solid #44475a;
+    --item-radius: 0;
+    --item-inline-margin: 0;
     --item-hover-bg: #44475a;
     --item-hover-color: #f8f8f2;
+    --item-hover-shadow: none;
+    --glass-sheen: none;
+    --glass-shine: none;
+    --focus-glow: 0 0 0 0 transparent;
+    --item-hover-scale: 1;
 
     --title-color: #bd93f9;
     /* Purple */
@@ -192,8 +279,15 @@ body.theme-alienblood {
     --scrollbar-thumb-radius: 0;
 
     --item-border-bottom: 1px solid #1a2f33;
+    --item-radius: 0;
+    --item-inline-margin: 0;
     --item-hover-bg: #1a2f33;
     --item-hover-color: #2f9603;
+    --item-hover-shadow: none;
+    --glass-sheen: none;
+    --glass-shine: none;
+    --focus-glow: 0 0 0 0 transparent;
+    --item-hover-scale: 1;
 
     --title-color: #c5c8c6;
     --title-weight: 400;
@@ -203,4 +297,233 @@ body.theme-alienblood {
 
     --scanline-display: none;
     --no-results-color: #2f9603;
+}
+
+/* --- Nord Theme --- */
+body.theme-nord {
+    --bg-overlay: #2e3440;
+    --bg-backdrop-filter: none;
+    --bg-webkit-backdrop-filter: none;
+
+    --container-radius: 10px;
+    --container-border: 1px solid #3b4252;
+    --container-shadow:
+        0 0 0 1px #232831,
+        0 10px 30px rgba(0, 0, 0, 0.5);
+
+    --input-color: #eceff4;
+    --input-placeholder: #4c566a;
+    --input-font-weight: 400;
+    --input-text-shadow: none;
+    --input-caret: #88c0d0;
+    /* Frost */
+
+    --separator-color: #3b4252;
+
+    --scrollbar-thumb: #4c566a;
+    --scrollbar-thumb-radius: 4px;
+
+    --item-border-bottom: 1px solid #3b4252;
+    --item-radius: 0;
+    --item-inline-margin: 0;
+    --item-hover-bg: #88c0d0;
+    /* Frost cyan */
+    --item-hover-color: #2e3440;
+    --item-hover-shadow: none;
+    --glass-sheen: none;
+    --glass-shine: none;
+    --focus-glow: 0 0 0 0 transparent;
+    --item-hover-scale: 1;
+
+    --title-color: #e5e9f0;
+    --title-weight: 400;
+
+    --url-color: #81a1c1;
+    /* Frost blue */
+    --url-hover-color: #2e3440;
+
+    --scanline-display: none;
+    --no-results-color: #4c566a;
+}
+
+/* --- Gruvbox (Dark) Theme --- */
+body.theme-gruvbox {
+    --bg-overlay: #282828;
+    --bg-backdrop-filter: none;
+    --bg-webkit-backdrop-filter: none;
+
+    --container-radius: 6px;
+    --container-border: 1px solid #3c3836;
+    --container-shadow:
+        0 0 0 1px #1d2021,
+        0 10px 30px rgba(0, 0, 0, 0.5);
+
+    --input-color: #ebdbb2;
+    --input-placeholder: #7c6f64;
+    --input-font-weight: 400;
+    --input-text-shadow: none;
+    --input-caret: #fabd2f;
+    /* Bright yellow */
+
+    --separator-color: #3c3836;
+
+    --scrollbar-thumb: #504945;
+    --scrollbar-thumb-radius: 2px;
+
+    --item-border-bottom: 1px solid #3c3836;
+    --item-radius: 0;
+    --item-inline-margin: 0;
+    --item-hover-bg: #fe8019;
+    /* Bright orange */
+    --item-hover-color: #282828;
+    --item-hover-shadow: none;
+    --glass-sheen: none;
+    --glass-shine: none;
+    --focus-glow: 0 0 0 0 transparent;
+    --item-hover-scale: 1;
+
+    --title-color: #ebdbb2;
+    --title-weight: 400;
+
+    --url-color: #a89984;
+    --url-hover-color: #282828;
+
+    --scanline-display: none;
+    --no-results-color: #7c6f64;
+}
+
+/* --- Tokyo Night Theme --- */
+body.theme-tokyonight {
+    --bg-overlay: #1a1b26;
+    --bg-backdrop-filter: none;
+    --bg-webkit-backdrop-filter: none;
+
+    --container-radius: 14px;
+    --container-border: 1px solid #292e42;
+    --container-shadow:
+        0 0 0 1px #16161e,
+        0 10px 30px rgba(0, 0, 0, 0.5);
+
+    --input-color: #c0caf5;
+    --input-placeholder: #565f89;
+    --input-font-weight: 400;
+    --input-text-shadow: none;
+    --input-caret: #7aa2f7;
+
+    --separator-color: #292e42;
+
+    --scrollbar-thumb: #414868;
+    --scrollbar-thumb-radius: 4px;
+
+    --item-border-bottom: 1px solid #292e42;
+    --item-radius: 0;
+    --item-inline-margin: 0;
+    --item-hover-bg: #7aa2f7;
+    --item-hover-color: #1a1b26;
+    --item-hover-shadow: none;
+    --glass-sheen: none;
+    --glass-shine: none;
+    --focus-glow: 0 0 0 0 transparent;
+    --item-hover-scale: 1;
+
+    --title-color: #c0caf5;
+    --title-weight: 400;
+
+    --url-color: #565f89;
+    --url-hover-color: #1a1b26;
+
+    --scanline-display: none;
+    --no-results-color: #565f89;
+}
+
+/* --- Solarized (Dark) Theme --- */
+body.theme-solarized {
+    --bg-overlay: #002b36;
+    --bg-backdrop-filter: none;
+    --bg-webkit-backdrop-filter: none;
+
+    --container-radius: 8px;
+    --container-border: 1px solid #073642;
+    --container-shadow:
+        0 0 0 1px #00212a,
+        0 10px 30px rgba(0, 0, 0, 0.5);
+
+    --input-color: #93a1a1;
+    --input-placeholder: #586e75;
+    --input-font-weight: 400;
+    --input-text-shadow: none;
+    --input-caret: #268bd2;
+    /* Blue */
+
+    --separator-color: #073642;
+
+    --scrollbar-thumb: #586e75;
+    --scrollbar-thumb-radius: 3px;
+
+    --item-border-bottom: 1px solid #073642;
+    --item-radius: 0;
+    --item-inline-margin: 0;
+    --item-hover-bg: #2aa198;
+    /* Cyan */
+    --item-hover-color: #002b36;
+    --item-hover-shadow: none;
+    --glass-sheen: none;
+    --glass-shine: none;
+    --focus-glow: 0 0 0 0 transparent;
+    --item-hover-scale: 1;
+
+    --title-color: #93a1a1;
+    --title-weight: 400;
+
+    --url-color: #586e75;
+    --url-hover-color: #002b36;
+
+    --scanline-display: none;
+    --no-results-color: #586e75;
+}
+
+/* --- Rosé Pine Theme --- */
+body.theme-rosepine {
+    --bg-overlay: #191724;
+    --bg-backdrop-filter: none;
+    --bg-webkit-backdrop-filter: none;
+
+    --container-radius: 16px;
+    --container-border: 1px solid #26233a;
+    --container-shadow:
+        0 0 0 1px #121019,
+        0 10px 30px rgba(0, 0, 0, 0.5);
+
+    --input-color: #e0def4;
+    --input-placeholder: #6e6a86;
+    --input-font-weight: 400;
+    --input-text-shadow: none;
+    --input-caret: #c4a7e7;
+    /* Iris */
+
+    --separator-color: #26233a;
+
+    --scrollbar-thumb: #403d52;
+    --scrollbar-thumb-radius: 8px;
+
+    --item-border-bottom: 1px solid #26233a;
+    --item-radius: 0;
+    --item-inline-margin: 0;
+    --item-hover-bg: #c4a7e7;
+    /* Iris */
+    --item-hover-color: #191724;
+    --item-hover-shadow: none;
+    --glass-sheen: none;
+    --glass-shine: none;
+    --focus-glow: 0 0 0 0 transparent;
+    --item-hover-scale: 1;
+
+    --title-color: #e0def4;
+    --title-weight: 400;
+
+    --url-color: #908caa;
+    --url-hover-color: #191724;
+
+    --scanline-display: none;
+    --no-results-color: #6e6a86;
 }

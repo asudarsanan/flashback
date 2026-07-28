@@ -63,11 +63,22 @@ export function getHelpCommands(setThemeCallback) {
         },
         {
             title: '/theme',
-            url: 'Change theme (glass, retro, catppuccin, dracula, alienblood)',
+            url: 'Change theme (glass, retro, catppuccin, dracula, alienblood, nord, gruvbox, tokyonight, solarized, rosepine)',
             action: () => {
                 const input = document.getElementById('flashback-input');
                 if (input) {
                     input.value = '/theme ';
+                    input.dispatchEvent(new Event('input'));
+                }
+            }
+        },
+        {
+            title: '/shortcut',
+            url: 'Change the keyboard shortcut that opens Flashback',
+            action: () => {
+                const input = document.getElementById('flashback-input');
+                if (input) {
+                    input.value = '/shortcut';
                     input.dispatchEvent(new Event('input'));
                 }
             }
